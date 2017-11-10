@@ -4,6 +4,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       namespace :application do
         get "/", :action => "index"
+        post "/registration", :action => "registration"
+        get "/:id", :action => "show_location"
+        post "/:id", :action => "update_location"
       end
     end
   end
