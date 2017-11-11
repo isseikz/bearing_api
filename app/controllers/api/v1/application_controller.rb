@@ -10,33 +10,33 @@ class Api::V1::ApplicationController < ActionController::API
   end
 
   def registration
-    @loc = Location.new
-    @loc.longitude = params[:lon]
-    @loc.lattitude = params[:lat]
-    @loc.save
-    render json: getLocationHash(@loc)
+    loc = Location.new
+    loc.longitude = params[:lon]
+    loc.lattitude = params[:lat]
+    loc.save
+    render json: getLocationHash(loc)
   end
 
   def show_location
-    @loc = Location.find(params[:id])
-    render json: getLocationHash(@loc)
+    loc = Location.find(params[:id])
+    render json: getLocationHash(loc)
   end
 
   def update_location
-    @loc = Location.find(params[:id])
-    @loc.longitude = params[:lon]
-    @loc.lattitude = params[:lat]
-    @loc.save
+    loc = Location.find(params[:id])
+    loc.longitude = params[:lon]
+    loc.lattitude = params[:lat]
+    loc.save
     render json: getLocationHash(Location.find(params[:id]))
 
   end
 
-  def getLocationHash(@loc)
+  def getLocationHash(loc)
     @location =
     {
-      id: @loc.id,
-      longitude: @loc.longitude,
-      latitude: @loc.lattitude
+      id: loc.id,
+      longitude: loc.longitude,
+      latitude:  loc.lattitude
     }
     return @location
   end
