@@ -3,8 +3,8 @@ class Api::V1::ApplicationController < ActionController::API
     @testLocation =
     {
       id: 0,
-      longitude: 139.12345,
-      lattitude: 35.12345,
+      longitude: 123.45678,
+      latitude: 12.35813,
     }
     render json: @testLocation
   end
