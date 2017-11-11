@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   namespace :api, {format: 'json'} do
     namespace :v1 do
       namespace :application do
-        get "/", :action => "index"
+        get "/0", :action => "index"
         post "/registration", :action => "registration"
         get "/:id", :action => "show_location"
         post "/:id", :action => "update_location"
