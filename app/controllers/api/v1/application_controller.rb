@@ -14,7 +14,7 @@ class Api::V1::ApplicationController < ActionController::API
     loc.longitude = params[:lon]
     loc.lattitude = params[:lat]
     loc.save
-    render json: getLocationHash(loc)
+    render json: getLocationHash(Location.find(params[:id]))
   end
 
   def show_location
@@ -27,7 +27,7 @@ class Api::V1::ApplicationController < ActionController::API
     loc.longitude = params[:lon]
     loc.lattitude = params[:lat]
     loc.save
-    render json: getLocationHash(loc)
+    render json: getLocationHash(Location.find(params[:id]))
 
   end
 
@@ -36,7 +36,7 @@ class Api::V1::ApplicationController < ActionController::API
     {
       id: loc.id,
       longitude: loc.longitude,
-      lattitude: loc.lattitude
+      latitude: loc.lattitude
     }
     return @location
   end
