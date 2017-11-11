@@ -18,15 +18,15 @@ class Api::V1::ApplicationController < ActionController::API
   end
 
   def show_location
-    loc = Location.find(params[:id].to_i)
-    render json: getLocationHash(loc)
+    @loc = Location.find(params[:id])
+    render json: getLocationHash(@loc)
   end
 
   def update_location
-    loc = Location.find(params[:id].to_i)
-    loc.longitude = params[:lon]
-    loc.lattitude = params[:lat]
-    loc.save
+    @loc = Location.find(params[:id])
+    @loc.longitude = params[:lon]
+    @loc.lattitude = params[:lat]
+    @loc.save
     render json: getLocationHash(Location.find(params[:id]))
 
   end
