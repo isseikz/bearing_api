@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117084536) do
+ActiveRecord::Schema.define(version: 20171127140259) do
 
   create_table "locations", force: :cascade do |t|
     t.float "longitude"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20171117084536) do
     t.datetime "updated_at", null: false
     t.float "bearing"
     t.float "speed"
+    t.string "token"
   end
 
 end

@@ -17,6 +17,7 @@ class Api::V1::ApplicationController < ActionController::API
     loc.lattitude = params[:lat]
     loc.bearing = params[:bea]
     loc.speed = params[:spd]
+    loc.token = params[:token]
     loc.save
     render json: getLocationHash(loc)
   end
@@ -32,10 +33,11 @@ class Api::V1::ApplicationController < ActionController::API
     loc.lattitude = params[:lat]
     loc.bearing = params[:bea]
     loc.speed = params[:spd]
+    loc.token = params[:token]
     loc.save
     render json: getLocationHash(Location.find(params[:id]))
-
   end
+
 
   def getLocationHash(loc)
     @location =
@@ -44,8 +46,11 @@ class Api::V1::ApplicationController < ActionController::API
       longitude: loc.longitude,
       latitude:  loc.lattitude,
       bearing:   loc.bearing,
+      token:     loc.token,
       speed:     loc.speed
     }
     return @location
   end
+
+
 end
