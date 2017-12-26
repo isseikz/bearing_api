@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171127140259) do
+ActiveRecord::Schema.define(version: 20171224112747) do
+
+  create_table "group_users", force: :cascade do |t|
+    t.integer "group_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_users_on_group_id"
+    t.index ["user_id"], name: "index_group_users_on_user_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.float "reference_latitude"
+    t.float "reference_longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "locations", force: :cascade do |t|
     t.float "longitude"
@@ -20,6 +36,16 @@ ActiveRecord::Schema.define(version: 20171127140259) do
     t.float "bearing"
     t.float "speed"
     t.string "token"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "token"
+    t.float "latitude"
+    t.float "longitude"
+    t.float "speed"
+    t.float "bearing"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

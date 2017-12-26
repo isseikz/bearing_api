@@ -9,6 +9,13 @@ Rails.application.routes.draw do
         post "/:id", :action => "update_location"
       end
     end
+    namespace :v2 do
+      namespace :application do
+        get "/register",           :action => "register_make_group"
+        get "/refPoint/:uid",      :action => "make_group"
+        get "/register/:gid",      :action => "register_access_to_group"
+        get "/refPoint/:gid/:uid", :action => "update_reference_point"
+      end
+    end
   end
-
 end

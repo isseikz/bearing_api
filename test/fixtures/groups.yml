@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  reference_latitude: 1.5
+  reference_longitude: 1.5
+
+two:
+  reference_latitude: 1.5
+  reference_longitude: 1.5
