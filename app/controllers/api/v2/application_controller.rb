@@ -1,3 +1,5 @@
+require 'andpush'
+
 class Api::V2::ApplicationController < ActionController::API
   def index
     @testLocation =
@@ -134,4 +136,41 @@ class Api::V2::ApplicationController < ActionController::API
       render json: @group
     end
   end
+
+  def notify_signal_to_group_member
+    server_key = "AAAA210pqpM:APA91bFfAogCaB2xesRHJXPzSSaxFyC1X19m9ggy6bA5_fB9yoAqZ1Mzd3-kqjA3JrjJgXefqZm4SrAcGEIotCFNapOl0qBjy0Dtnz6L1FhO8XxWTQGIQ-ZmFHgcmumdLRRlol_Ld25m"
+
+    @group = Group.find(params[:gid])
+    @group_users = @group.group_users
+    @group_users.each { |e|
+        user_token = e.user.token
+        puts(user_token)
+
+        client = Andpush.build(server_key)
+        payload = {
+          to: user_token,
+          notification: {
+            title: "footstep",
+            body:  "ton",
+          },
+          data: {
+            extra: "data"
+          }
+        }
+
+        response = client.push(payload)
+        json = response.json
+
+        puts(json[:canonical_ids])
+        puts(json[:failure])
+        puts(json[:multicast_id])
+
+        result = json[:results].first
+        puts(result[:message_id])      # => "0:1489498959348701%3b8aef473b8aef47"
+        puts(result[:error])           # => nil, "InvalidRegistration" or something else
+        puts(result[:registration_id]) # => nil
+      }
+
+  end
+
 end

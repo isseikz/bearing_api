@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         get "/refPoint/:uid",      :action => "make_group"
         get "/register/:gid",      :action => "register_access_to_group"
         get "/refPoint/:gid/:uid", :action => "update_reference_point"
+        get "/notify/:gid",        :action => "notify_signal_to_group_member" 
       end
     end
   end
