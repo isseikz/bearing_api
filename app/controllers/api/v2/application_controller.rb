@@ -124,8 +124,17 @@ class Api::V2::ApplicationController < ActionController::API
     @user.token     = params[:token]
     @user.save
 
-    # 各ユーザの平均位置を目標点に設定した
     @group = Group.find(params[:gid])
+
+    # グループに存在しなければ追加
+    if !@group.group_users.exists?(:user_id => @user.id)
+      @group_user = GroupUser.new
+      @group_user.group_id = @group.id
+      @group_user.user_id  = @user.id
+      @group_user.save
+    end
+
+    # 各ユーザの平均位置を目標点に設定した
     numberOfMembers = @group.group_users.length
     @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
     @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
