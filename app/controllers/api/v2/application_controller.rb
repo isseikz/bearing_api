@@ -159,10 +159,6 @@ class Api::V2::ApplicationController < ActionController::API
         client = Andpush.build(server_key)
         payload = {
           to: user_token,
-          notification: {
-            title: "footstep",
-            body:  "ton",
-          },
           data: {
             extra: "data"
           }
