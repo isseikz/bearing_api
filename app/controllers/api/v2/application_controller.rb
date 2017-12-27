@@ -147,6 +147,7 @@ class Api::V2::ApplicationController < ActionController::API
   end
 
   def notify_signal_to_group_member
+    puts('notify')
     server_key = "AAAA210pqpM:APA91bFfAogCaB2xesRHJXPzSSaxFyC1X19m9ggy6bA5_fB9yoAqZ1Mzd3-kqjA3JrjJgXefqZm4SrAcGEIotCFNapOl0qBjy0Dtnz6L1FhO8XxWTQGIQ-ZmFHgcmumdLRRlol_Ld25m"
 
     @group = Group.find(params[:gid])
@@ -175,9 +176,9 @@ class Api::V2::ApplicationController < ActionController::API
         puts(json[:multicast_id])
 
         result = json[:results].first
-        puts(result[:message_id])      # => "0:1489498959348701%3b8aef473b8aef47"
-        puts(result[:error])           # => nil, "InvalidRegistration" or something else
-        puts(result[:registration_id]) # => nil
+        puts(result[:message_id])
+        puts(result[:error])
+        puts(result[:registration_id])
       }
 
   end
