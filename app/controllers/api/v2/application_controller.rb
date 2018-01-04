@@ -111,7 +111,7 @@ class Api::V2::ApplicationController < ActionController::API
   end
 
   # 役割：ユーザID,グループIDを照合して目標位置を更新する
-  # 入力：緯度(lat),経度(lat),グループID(gid),ユーザID(uid)
+  # 入力：緯度(lon),経度(lat),グループID(gid),ユーザID(uid)
   # 出力：目標緯度(lat),目標経度(lon)
   def update_reference_point
     @user = User.find(params[:uid])
@@ -138,7 +138,8 @@ class Api::V2::ApplicationController < ActionController::API
     numberOfMembers = @group.group_users.length
     @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
     @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
-    if !@group.save
+    saved = @group.save
+    if saved
       render :text => "Reference point updating Error", :status => 500
       return
     else
