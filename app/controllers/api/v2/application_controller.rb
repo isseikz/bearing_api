@@ -136,8 +136,11 @@ class Api::V2::ApplicationController < ActionController::API
 
     # 各ユーザの平均位置を目標点に設定した
     numberOfMembers = @group.group_users.length
+    puts(numberOfMembers)
     puts(@user.latitude)
     puts(@user.longitude)
+    puts(past_latitude)
+    puts(past_longitude)
     puts(@group.reference_latitude)
     puts(@group.reference_longitude)
     @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
