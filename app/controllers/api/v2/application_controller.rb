@@ -137,6 +137,7 @@ class Api::V2::ApplicationController < ActionController::API
     # 各ユーザの平均位置を目標点に設定した
     numberOfMembers = @group.group_users.length
     puts(numberOfMembers)
+    puts(user_id)
     puts(@user.latitude)
     puts(@user.longitude)
     puts(past_latitude)
