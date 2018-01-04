@@ -132,6 +132,9 @@ class Api::V2::ApplicationController < ActionController::API
       @group_user.group_id = @group.id
       @group_user.user_id  = @user.id
       @group_user.save
+      flag_add_new_user = true
+    else
+      flag_add_new_user = false
     end
 
     # 各ユーザの平均位置を目標点に設定した
@@ -144,8 +147,15 @@ class Api::V2::ApplicationController < ActionController::API
     puts(past_longitude)
     puts(@group.reference_latitude)
     puts(@group.reference_longitude)
-    @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
-    @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
+
+    if flag_add_new_user
+      @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude) / numberOfMembers
+      @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude) / numberOfMembers
+    else
+      @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
+      @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
+    end
+
     puts(@group.reference_latitude)
     puts(@group.reference_longitude)
     @group.save
