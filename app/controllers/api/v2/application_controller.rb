@@ -136,15 +136,18 @@ class Api::V2::ApplicationController < ActionController::API
 
     # 各ユーザの平均位置を目標点に設定した
     numberOfMembers = @group.group_users.length
+    puts(@group.reference_latitude)
+    puts(@group.reference_longitude)
     @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
     @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
-    saved = @group.save
-    if saved
-      render :text => "Reference point updating Error", :status => 500
-      return
-    else
-      render json: @group
-    end
+    @group.save
+    render json: @group
+    # if !@group.save
+    #   render :text => "Reference point updating Error", :status => 500
+    #   return
+    # else
+    #   render json: @group
+    # end
   end
 
   def notify_signal_to_group_member
