@@ -149,8 +149,8 @@ class Api::V2::ApplicationController < ActionController::API
     puts(@group.reference_longitude)
 
     if flag_add_new_user
-      @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude) / numberOfMembers
-      @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude) / numberOfMembers
+      @group.reference_latitude  = (@group.reference_latitude  * (numberOfMembers-1) + @user.latitude ) / numberOfMembers
+      @group.reference_longitude = (@group.reference_longitude * (numberOfMembers-1) + @user.longitude) / numberOfMembers
     else
       @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
       @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
