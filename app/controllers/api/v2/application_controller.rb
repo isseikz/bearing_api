@@ -141,6 +141,16 @@ class Api::V2::ApplicationController < ActionController::API
       flag_add_new_user = false
     end
 
+    @log = RouteLog.new
+    @log.user_id = @user.id
+    @log.group_id = @group.id
+    @log.latitude = @user.latitude
+    @log.longitude = @user.longitude
+    @log.speed = @user.speed
+    @log.bearing = @user.bearing
+    @log.save
+
+
     # TODO 目標点(待ち合わせ場所)の決定方法
     # 他のユーザとの距離を調べる
     # 距離が一定値以下？
