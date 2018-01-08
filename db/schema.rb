@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171224112747) do
+ActiveRecord::Schema.define(version: 20180108030351) do
 
   create_table "group_users", force: :cascade do |t|
     t.integer "group_id"
@@ -36,6 +36,13 @@ ActiveRecord::Schema.define(version: 20171224112747) do
     t.float "bearing"
     t.float "speed"
     t.string "token"
+  end
+
+  create_table "user_around_mes", force: :cascade do |t|
+    t.integer "user1_id"
+    t.integer "user2_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,5 +1,9 @@
 require 'andpush'
 
+require 'json'
+require 'uri'
+require 'net/https'
+
 class Api::V2::ApplicationController < ActionController::API
   def index
     @testLocation =
@@ -137,6 +141,69 @@ class Api::V2::ApplicationController < ActionController::API
       flag_add_new_user = false
     end
 
+    # TODO 目標点(待ち合わせ場所)の決定方法
+    # 他のユーザとの距離を調べる
+    # 距離が一定値以下？
+      # 一定値以下なら、近隣ユーザモデルに該当データがあるか検索
+        # データは存在したか？
+          # 存在したら、uid1→uid2の経路をAPIで検索する
+          # 存在しなかったら、リクエストユーザ→他ユーザの経路をAPIで検索する
+        # WayPointの配列をレスポンスとして受け取る
+        # uid1,uid2,配列の中央値を近隣ユーザモデルに保存
+
+      # 一定値以上なら、何もせず次のユーザとの距離を計算
+    haveUserAroundMe = false
+    meeting_latitude  = 0.0
+    meeting_longitude = 0.0
+
+    @group.group_users.each{ |group_user|
+      another_user = group_user.user
+      if group_user.user_id != @user.id
+        puts("Calc distance...")
+        distance = (another_user.latitude - @user.latitude) ** 2 + (another_user.longitude - @user.longitude) ** 2
+        printf('distance: %.10f \n', distance)
+        if distance <= (0.00100 ** 2) && distance >= (0.00010 ** 2) # 条件：だいたい100[m]以下、10[m]以上(近すぎならと合流したとみなす)
+          haveUserAroundMe = true
+
+          puts('near')
+            if UserAroundMe.find_by(:user1_id => another_user.id, :user2_id => @user.id)
+              # TODO uid1→uid2の経路をAPIで検索するurlを生成
+              search_params = 'origin=' + another_user.latitude.to_s + ',' + another_user.longitude.to_s + '&destination=' + @user.latitude.to_s + ',' + @user.longitude.to_s
+            elsif UserAroundMe.find_by(:user2_id => @user.id,:user1_id => another_user.id)
+              # TODO リクエストユーザ→他ユーザの経路をAPIで検索するurlを生成
+              search_params = 'origin=' + @user.latitude.to_s + ',' + @user.longitude.to_s + '&destination=' + another_user.latitude.to_s + ',' + another_user.longitude.to_s
+            else
+              @userAroudMe = UserAroundMe.new
+              @userAroudMe.user1_id = @user.id
+              @userAroudMe.user2_id =  another_user.id
+              @userAroudMe.save
+              search_params = 'origin=' + @user.latitude.to_s + ',' + @user.longitude.to_s + '&destination=' + another_user.latitude.to_s + ',' + another_user.longitude.to_s
+            end
+            common_params = "&mode=walking&key=AIzaSyAz6oV0_57kPlmxfcP2TZ2oJXAO9d3mAzw"
+            url = 'https://maps.googleapis.com/maps/api/directions/json?' + search_params + common_params
+            puts(url)
+
+            # TODO 上述のurlで経路を検索してJSONのレスポンスを受け取る
+            uri = URI.parse(url)
+            response = Net::HTTP.get(uri)
+            puts(response)
+            json = JSON.parse(response)
+            hash_routes = json["routes"][0]
+            puts(hash_routes)
+            hash_legs = hash_routes["legs"][0]
+            puts(hash_legs)
+            hash_steps = hash_legs["steps"]
+            puts(hash_steps)
+            hash_end_location = hash_legs["end_location"]
+            puts(hash_end_location)
+
+            meeting_latitude  = hash_end_location["lat"].to_f
+            meeting_longitude = hash_end_location["lng"].to_f
+        end
+      end
+    }
+
+
     # 各ユーザの平均位置を目標点に設定した
     numberOfMembers = @group.group_users.length
     puts(numberOfMembers)
@@ -155,10 +222,17 @@ class Api::V2::ApplicationController < ActionController::API
       @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
       @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
     end
+    @group.save
+
+    # 近くにユーザがいるときはその人と合流することを優先する
+    # 全体の目標位置ではないため、保存はしない
+    if haveUserAroundMe
+      @group.reference_latitude  = meeting_latitude
+      @group.reference_longitude = meeting_longitude
+    end
 
     puts(@group.reference_latitude)
     puts(@group.reference_longitude)
-    @group.save
     render json: @group
     # if !@group.save
     #   render :text => "Reference point updating Error", :status => 500
