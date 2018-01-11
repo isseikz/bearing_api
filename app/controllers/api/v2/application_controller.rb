@@ -268,6 +268,7 @@ class Api::V2::ApplicationController < ActionController::API
           to: user_token,
           data: {
             flag: params[:flag].to_s
+            user_id: params[:uid].to_s
           }
         }
 
