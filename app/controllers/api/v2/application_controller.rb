@@ -21,6 +21,7 @@ class Api::V2::ApplicationController < ActionController::API
   # 入力：緯度(lat),経度(lon),速さ
   # 出力：ユーザID(uid),グループID(gid)
   def register_make_group
+    puts('register_make_group')
     @new_user = User.new
     @new_user.token     = params[:token] #Push通知用トークン
     @new_user.latitude  = params[:lat]   #経度
@@ -33,6 +34,7 @@ class Api::V2::ApplicationController < ActionController::API
       return
     end
 
+    puts('create a new Group')
     @new_group = Group.new
     @new_group.reference_latitude  = params[:lat]
     @new_group.reference_longitude = params[:lon]
@@ -41,6 +43,7 @@ class Api::V2::ApplicationController < ActionController::API
       return
     end
 
+    puts('create a bonding between')
     @group_user = GroupUser.new
     @group_user.user_id  = @new_user.id
     @group_user.group_id = @new_group.id
