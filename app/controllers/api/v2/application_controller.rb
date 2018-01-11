@@ -300,6 +300,7 @@ class Api::V2::ApplicationController < ActionController::API
     }
     # TODO ユーザid,グループidでログを検索
       @log = RouteLog.find_by(:group_id => @group.id, :user_id => @user.id)
+      puts(@log)
     # TODO ユーザ別に分類してjsonで返信
     render @log
   end
