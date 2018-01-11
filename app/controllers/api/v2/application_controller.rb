@@ -256,7 +256,7 @@ class Api::V2::ApplicationController < ActionController::API
     #   render json: @group
     # end
   end
-
+# 
   def notify_signal_to_group_member
     puts('notify')
     server_key = "AAAA210pqpM:APA91bFfAogCaB2xesRHJXPzSSaxFyC1X19m9ggy6bA5_fB9yoAqZ1Mzd3-kqjA3JrjJgXefqZm4SrAcGEIotCFNapOl0qBjy0Dtnz6L1FhO8XxWTQGIQ-ZmFHgcmumdLRRlol_Ld25m"
