@@ -256,7 +256,7 @@ class Api::V2::ApplicationController < ActionController::API
     #   render json: @group
     # end
   end
-# 
+#
   def notify_signal_to_group_member
     puts('notify')
     server_key = "AAAA210pqpM:APA91bFfAogCaB2xesRHJXPzSSaxFyC1X19m9ggy6bA5_fB9yoAqZ1Mzd3-kqjA3JrjJgXefqZm4SrAcGEIotCFNapOl0qBjy0Dtnz6L1FhO8XxWTQGIQ-ZmFHgcmumdLRRlol_Ld25m"
@@ -289,6 +289,19 @@ class Api::V2::ApplicationController < ActionController::API
         puts(result[:registration_id])
       }
 
+  end
+
+  def get_log_of_the_group
+    # TODO グループを検索
+    @group = Group.find(params[:gid])
+    # TODO グループと紐づいているユーザを検索
+    @group.group_users.each(|group_user|
+      @user = group_user.user
+    )
+    # TODO ユーザid,グループidでログを検索
+      @log = RouteLog.find_by(:group_id => @group.id, :user_id => @user.id)
+    # TODO ユーザ別に分類してjsonで返信
+    render @log
   end
 
 end
