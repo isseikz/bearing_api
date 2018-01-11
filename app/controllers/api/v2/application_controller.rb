@@ -295,12 +295,14 @@ class Api::V2::ApplicationController < ActionController::API
     # TODO グループを検索
     @group = Group.find(params[:gid])
     # TODO グループと紐づいているユーザを検索
-    @group.group_users.each{|group_user|
-      @user = group_user.user
-    }
+    # @group.group_users.each{|group_user|
+    #   @user = group_user.user
+    #   @log = RouteLog.where(:group_id => @group.id, :user_id => @user.id)
+    #   puts(@log)
+    # }
+    @log = RouteLog.where(:group_id => @group.id)
     # TODO ユーザid,グループidでログを検索
-      @log = RouteLog.find_by(:group_id => @group.id, :user_id => @user.id)
-      puts(@log)
+
     # TODO ユーザ別に分類してjsonで返信
     render json: @log
   end
