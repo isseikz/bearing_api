@@ -89,6 +89,7 @@ class Api::V2::ApplicationController < ActionController::API
   # 入力：緯度(lat),経度(lon),グループID(gid)
   # 出力：ユーザID(uid)
   def register_access_to_group
+    puts("register_access_to_group")
     @new_user = User.new
     @new_user.token     = params[:token]     #Push通知用トークン
     @new_user.latitude  = params[:lat]       #経度
