@@ -141,6 +141,7 @@ class Api::V2::ApplicationController < ActionController::API
       flag_add_new_user = false
     end
 
+    # 待たない合わせ中にユーザーの移動をロギングする
     @log = RouteLog.new
     @log.user_id = @user.id
     @log.group_id = @group.id
