@@ -267,7 +267,7 @@ class Api::V2::ApplicationController < ActionController::API
         payload = {
           to: user_token,
           data: {
-            extra: "data"
+            "flag" : params[:flag].to_s
           }
         }
 
