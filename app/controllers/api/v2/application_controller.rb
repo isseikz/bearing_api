@@ -22,37 +22,37 @@ class Api::V2::ApplicationController < ActionController::API
   # 出力：ユーザID(uid),グループID(gid)
   def register_make_group
     puts('register_make_group')
-    # @new_user = User.new
-    # @new_user.token     = params[:token] #Push通知用トークン
-    # @new_user.latitude  = params[:lat]   #経度
-    # @new_user.longitude = params[:lon]   #緯度
-    # @new_user.speed     = params[:spd]   #速さ
-    # @new_user.bearing   = params[:bea]   #進行方向
-    #
-    # if !@new_user.save
-    #   render :text => "User Validation Error",  :status => 500
-    #   return
-    # end
-    #
-    # puts('create a new Group')
-    # @new_group = Group.new
-    # @new_group.reference_latitude  = params[:lat]
-    # @new_group.reference_longitude = params[:lon]
-    # if !@new_group.save
-    #   render :text => "Group Validation Error", :status => 500
-    #   return
-    # end
-    #
-    # puts('create a bonding between')
-    # @group_user = GroupUser.new
-    # @group_user.user_id  = @new_user.id
-    # @group_user.group_id = @new_group.id
-    # if !@group_user.save
-    #   render :text => "GroupUser Relation Error", :status => 500
-    #   return
-    # else
-    #   render json: @group_user
-    # end
+    @new_user = User.new
+    @new_user.token     = params[:token] #Push通知用トークン
+    @new_user.latitude  = params[:lat]   #経度
+    @new_user.longitude = params[:lon]   #緯度
+    @new_user.speed     = params[:spd]   #速さ
+    @new_user.bearing   = params[:bea]   #進行方向
+
+    if !@new_user.save
+      render :text => "User Validation Error",  :status => 500
+      return
+    end
+
+    puts('create a new Group')
+    @new_group = Group.new
+    @new_group.reference_latitude  = params[:lat]
+    @new_group.reference_longitude = params[:lon]
+    if !@new_group.save
+      render :text => "Group Validation Error", :status => 500
+      return
+    end
+
+    puts('create a bonding between')
+    @group_user = GroupUser.new
+    @group_user.user_id  = @new_user.id
+    @group_user.group_id = @new_group.id
+    if !@group_user.save
+      render :text => "GroupUser Relation Error", :status => 500
+      return
+    else
+      render json: @group_user
+    end
   end
 
   # 役割：ユーザIDのある端末にグループIDを付与する
@@ -271,8 +271,8 @@ class Api::V2::ApplicationController < ActionController::API
         payload = {
           to: user_token,
           data: {
-            flag: params[:flag].to_s
-            user_id: params[:uid].to_s
+            flag: params[:flag].to_s,
+            user_id: params[:uid]
           }
         }
 
