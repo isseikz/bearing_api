@@ -19,6 +19,7 @@ Rails.application.routes.draw do
         get "/register/:gid",      :action => "register_access_to_group"
         get "/refPoint/:gid/:uid", :action => "update_reference_point"
         get "/notify/:gid/:uid",   :action => "notify_signal_to_group_member"
+        get "/shareReed/:gid/:uid/:arrData",   :action => "notify_signal_to_group_member"
         get "/routelog/:gid",      :action => "get_log_of_the_group"
       end
     end

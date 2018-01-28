@@ -179,6 +179,7 @@ class Api::V2::ApplicationController < ActionController::API
         printf('distance: %.10f \n', distance)
         if distance <= (0.00100 ** 2) && distance >= (0.00010 ** 2) # 条件：だいたい100[m]以下、10[m]以上(近すぎならと合流したとみなす)
           haveUserAroundMe = true
+          # TODO 10[m]以下の時は、ユーザをひとまとめにして考える
 
           puts('near')
             if UserAroundMe.find_by(:user1_id => another_user.id, :user2_id => @user.id)
@@ -231,11 +232,16 @@ class Api::V2::ApplicationController < ActionController::API
     puts(@group.reference_longitude)
 
     if flag_add_new_user
-      @group.reference_latitude  = (@group.reference_latitude  * (numberOfMembers-1) + @user.latitude ) / numberOfMembers
-      @group.reference_longitude = (@group.reference_longitude * (numberOfMembers-1) + @user.longitude) / numberOfMembers
+      @group.reference_latitude    = (@group.reference_latitude  * (numberOfMembers-1) + @user.latitude ) / numberOfMembers
+      @group.reference_longitude   = (@group.reference_longitude * (numberOfMembers-1) + @user.longitude) / numberOfMembers
     else
-      @group.reference_latitude  = (@group.reference_latitude * numberOfMembers + @user.latitude  - past_latitude) / numberOfMembers
-      @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
+      if distance < (0.00010 ** 2) # 10[m] 以下なら自分の「位置を目標点にカウントしない
+        @group.reference_latitude  = (@group.reference_latitude  * numberOfMembers - @user.latitude  - past_latitude)  / (numberOfMembers - 1 )
+        @group.reference_longitude = (@group.reference_longitude * numberOfMembers - @user.longitude - past_longitude) / (numberOfMembers - 1 )
+      else
+        @group.reference_latitude  = (@group.reference_latitude  * numberOfMembers + @user.latitude  - past_latitude)  / numberOfMembers
+        @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
+      end
     end
     @group.save
 
@@ -273,6 +279,41 @@ class Api::V2::ApplicationController < ActionController::API
           data: {
             flag: params[:flag].to_s,
             user_id: params[:uid]
+          }
+        }
+
+        response = client.push(payload)
+        json = response.json
+
+        puts(json[:canonical_ids])
+        puts(json[:failure])
+        puts(json[:multicast_id])
+
+        result = json[:results].first
+        puts(result[:message_id])
+        puts(result[:error])
+        puts(result[:registration_id])
+      }
+
+  end
+
+  def notify_signal_to_group_member
+    puts('notify')
+    server_key = "AAAA210pqpM:APA91bFfAogCaB2xesRHJXPzSSaxFyC1X19m9ggy6bA5_fB9yoAqZ1Mzd3-kqjA3JrjJgXefqZm4SrAcGEIotCFNapOl0qBjy0Dtnz6L1FhO8XxWTQGIQ-ZmFHgcmumdLRRlol_Ld25m"
+
+    @group = Group.find(params[:gid])
+    @group_users = @group.group_users
+    @group_users.each { |e|
+        user_token = e.user.token
+        puts(user_token)
+
+        client = Andpush.build(server_key)
+        payload = {
+          to: user_token,
+          data: {
+            flag: params[:flag].to_s,
+            user_id: params[:uid],
+            arrdata: params[:arrData]
           }
         }
 
