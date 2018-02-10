@@ -216,7 +216,7 @@ class Api::V2::ApplicationController < ActionController::API
     #     #     meeting_longitude = hash_end_location["lng"].to_f
     #     # end
     #   end
-    }
+    # }
 
 
     # 各ユーザの平均位置を目標点に設定した
