@@ -136,6 +136,7 @@ class Api::V2::ApplicationController < ActionController::API
 
     # グループに存在しなければ追加
     if !@group.group_users.exists?(:user_id => @user.id)
+      puts("new user added to " + @group.id)
       @group_user = GroupUser.new
       @group_user.group_id = @group.id
       @group_user.user_id  = @user.id
@@ -234,9 +235,10 @@ class Api::V2::ApplicationController < ActionController::API
     #   @group.reference_latitude    = (@group.reference_latitude  * (numberOfMembers-1) + @user.latitude ) / numberOfMembers
     #   @group.reference_longitude   = (@group.reference_longitude * (numberOfMembers-1) + @user.longitude) / numberOfMembers
     # else
+    distance = (@user.latitude - @group.reference_latitude)**2 + (@user.longitude - @group.reference_longitude)**2
       if distance < (0.00010 ** 2) # 10[m] 以下なら自分の「位置を目標点にカウントしない
-        @group.reference_latitude  = (@group.reference_latitude  * numberOfMembers - @user.latitude  - past_latitude)  / (numberOfMembers - 1 )
-        @group.reference_longitude = (@group.reference_longitude * numberOfMembers - @user.longitude - past_longitude) / (numberOfMembers - 1 )
+        @group.reference_latitude  = (@group.reference_latitude  * numberOfMembers - @user.latitude  - past_latitude)  / (numberOfMembers - 0 )
+        @group.reference_longitude = (@group.reference_longitude * numberOfMembers - @user.longitude - past_longitude) / (numberOfMembers - 0 )
       else
         @group.reference_latitude  = (@group.reference_latitude  * numberOfMembers + @user.latitude  - past_latitude)  / numberOfMembers
         @group.reference_longitude = (@group.reference_longitude * numberOfMembers + @user.longitude - past_longitude) / numberOfMembers
@@ -246,12 +248,12 @@ class Api::V2::ApplicationController < ActionController::API
 
     # 近くにユーザがいるときはその人と合流することを優先する
     # 全体の目標位置ではないため、保存はしない
-    if haveUserAroundMe
-      @group.reference_latitude  = meeting_latitude
-      @group.reference_longitude = meeting_longitude
-    end
+    # if haveUserAroundMe
+    #  @group.reference_latitude  = meeting_latitude
+    #  @group.reference_longitude = meeting_longitude
+    #end
 
-    @group.numberOfMembers = numberOfMembers
+    # @group.numberOfMembers = numberOfMembers
 
     puts(@group.reference_latitude)
     puts(@group.reference_longitude)
